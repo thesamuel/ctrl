@@ -1,0 +1,12 @@
+name: ctrl
+channels:
+  - defaults
+dependencies:
+  - python=3.7
+  - pip
+
+  - pip:
+      - fastBPE
+      - tensorflow-gpu==1.14
+      - tqdm
+
