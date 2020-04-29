@@ -64,10 +64,6 @@ def main():
     parser = argparse.ArgumentParser(description='TensorFlow code for creating TFRecords data')
     parser.add_argument('--jsonl_file', type=str, required=True,
                         help='location of jsonl file to convert to TFRecords')
-    parser.add_argument('--jsonl_file', type=str, required=True,
-                        help='location of jsonl file to convert to TFRecords')
-    parser.add_argument('--control_code', type=str, required=True,
-                        help='control code to use for this file. must be in the vocabulary, else it will error out.')
     parser.add_argument('--sequence_len', type=int, required=True,
                         help='sequence length of model being fine-tuned (256 or 512)')
     args = parser.parse_args()
