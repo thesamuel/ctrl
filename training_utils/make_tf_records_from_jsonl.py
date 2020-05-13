@@ -1,14 +1,9 @@
 import argparse
-import fastBPE
-import glob
-import numpy as np
-import os
-import pdb
-import platform
+import json
 import re
-import sys
+
+import fastBPE
 import tensorflow as tf
-import time
 from tqdm import tqdm
 
 CODES_FILE = '../codes'
@@ -45,7 +40,7 @@ def load_examples(path_to_train_file, vocab, seq_len):
 
         for i in range(0, len(text), seq_len):
             text_chunk = text[i: i + seq_len]
-            if text_chunk != seq_len:
+            if len(text_chunk) != seq_len:
                 break
             examples.append((control_code, text_chunk))
 
@@ -68,14 +63,17 @@ def main():
                         help='sequence length of model being fine-tuned (256 or 512)')
     args = parser.parse_args()
 
+    path_to_text_file = args.jsonl_file
+    seq_length = args.sequence_len
+
     # Load vocab
     vocab = load_vocab()
-    examples = load_examples(args.text_file, vocab, args.sequence_len)
+    examples = load_examples(path_to_text_file, vocab, seq_length)
 
     # Creating a mapping from unique characters to indices
     word2idx = {u: i for i, u in enumerate(vocab)}
 
-    tfrecords_fname = args.text_file.lower() + '.tfrecords'
+    tfrecords_fname = path_to_text_file.lower() + '.tfrecords'
 
     total = 0
     skipped = 0
@@ -88,7 +86,7 @@ def main():
                 skipped += 1
                 continue
 
-            if len(inputs) != seq_length + 1 or len(outputs) != seq_length + 1:
+            if len(inputs) != seq_length or len(outputs) != seq_length:
                 break
 
             features = tf.train.Features(
